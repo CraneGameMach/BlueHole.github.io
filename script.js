@@ -73,6 +73,9 @@ function skipIntro() {
     mainContent.style.display = 'block';
     bottomNav.style.display = 'flex'; // 네비게이션 바 표시
     initMain();
+    
+    // ✨ 이 줄을 추가! : 인트로 스킵 시 강제로 '세계관 개요' 화면을 띄워줍니다.
+    showSection('worldview', document.querySelector('.nav-btn'));
 }
 
 // ✨ [새로 추가된 화면 전환 로직]
