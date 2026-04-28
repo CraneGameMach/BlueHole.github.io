@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLUE HOLE | The Deep Dive</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="intro-screen">
+    <div id="typing-text" class="terminal-text"></div>
+    <div id="login-form">
+        <input type="text" id="nickname-input" placeholder="[다이버 식별명 입력]">
+        <button onclick="startDive()">[ Dive ]</button>
+    </div>
+</div>
+
+<div id="main-content">
+    
+    <section id="worldview">
+        <h2>Worldview Overview</h2>
+        <p><strong>포스트 아포칼립스 / 2037년</strong></p>
+        <p style="margin-top: 10px; line-height: 1.6;">
+            해수면 상승으로 육지가 소멸하고, 인류는 건물 위에서 생활하고 있다. <br>
+            그러던 중 바다 밑바닥을 알 수 없는 거대한 싱크홀 <strong>'블루홀(Blue Hole)'</strong>이 발견되었다.<br>
+            살기 위해, 혹은 그 끝에 있다는 낙원을 찾기 위해... 사람들은 심해의 뒤집힌 탑으로 하강한다.
+        </p>
+    </section>
+
+    <section id="guide">
+        <h2>The Abyss Guide</h2>
+        <div class="floor-list" id="floor-container">
+            </div>
+    </section>
+
+    <section id="entities">
+        <h2>Entities</h2>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="filterChar('다이버')">다이버</button>
+            <button class="tab-btn" onclick="filterChar('하이랭커')">하이랭커</button>
+            <button class="tab-btn" onclick="filterChar('호라이즌')">호라이즌</button>
+            <button class="tab-btn" onclick="filterChar('관리자')">관리자</button>
+        </div>
+        <div class="character-grid" id="char-container">
+            </div>
+    </section>
+
+    <section id="user-setup">
+        <h2>Diver Setup</h2>
+        <button onclick="drawArtifact()">랜덤 아티팩트 스캔</button>
+        <div id="artifact-result" class="artifact-box">아직 획득한 아티팩트가 없습니다.</div>
+        
+        <textarea id="diver-note">
+[다이버 노트]
+이름: (인트로에서 입력한 닉네임이 들어갑니다)
+나이: 
+성별: 
+외관: 
+성격: 
+무기/아티팩트: 
+특징: </textarea>
+        <button onclick="copyNote()">📋 설정 복사하기</button>
+    </section>
+
+    <section id="terminal">
+        <h2>System Terminal</h2>
+        <div class="command-list">
+            <div class="flex-between"><span>!상태창 - 현재 층수 및 피로도 확인</span> <button onclick="copyText('!상태창')">복사</button></div>
+            <div class="flex-between"><span>!인벤토리 - 소지 아티팩트 확인</span> <button onclick="copyText('!인벤토리')">복사</button></div>
+            <div class="flex-between"><span>!관리자호출 - 해당 층 관리자 대면</span> <button onclick="copyText('!관리자호출')">복사</button></div>
+        </div>
+
+        <h3 style="margin-top: 30px; font-size: 1rem;">Q&A 채널</h3>
+        <div class="chat-container">
+            <div class="bubble user">첫 문장은 어떻게 시작해야 하나요?</div>
+            <div class="bubble system">"블루홀 입구에 도착하여 심호흡을 한다." 처럼 행동과 지문을 섞어 자유롭게 묘사하며 시작하시면 됩니다. 튜토리얼 층(B0) 안내를 먼저 받게 됩니다.</div>
+            <div class="bubble user">전투는 턴제인가요?</div>
+            <div class="bubble system">다이버님의 행동 묘사에 따라 AI가 상황을 판정하여 결과를 출력합니다. 시스템 돌파 규칙을 참고해주세요.</div>
+        </div>
+    </section>
+</div>
+
+<div id="modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">[X]</span>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
