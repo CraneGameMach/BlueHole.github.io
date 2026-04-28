@@ -1,4 +1,3 @@
-// --- [데이터 영역 동일] ---
 const floorData = [
     { id: "B0", name: "B0층", theme: "튜토리얼 / 수중시험장", danger: "최하", desc: "상어 한 마리 사냥 임무. 관리자 히포캄프가 안내합니다.", manager: "히포캄프 (해마)" },
     { id: "B1", name: "B1층~B9층", theme: "해수면+폐도시", danger: "하", desc: "밖과 가장 유사하며 1층은 인구밀집 생활구역입니다.", manager: "프사마테 (물고기군집)" },
@@ -24,16 +23,172 @@ const factionDescriptions = {
 
 const artifacts = ["녹슨 해마의 나침반", "심해석 펜던트", "부서진 랭커의 검", "빛나는 진주 카트리지"];
 
-// --- [로직 영역] ---
 const introScreen = document.getElementById('intro-screen');
 const mainContent = document.getElementById('main-content');
-const bottomNav = document.getElementById('bottom-nav'); // 네비게이션 바
+const bottomNav = document.getElementById('bottom-nav');
 const typingText = document.getElementById('typing-text');
 const loginForm = document.getElementById('login-form');
 
-// 방문 체크 로직
+// 방문 기록 24시간 체크
 function checkVisit() {
-    const lastVisit = localStorage.getItem('bluehole_visit');
+    try {
+        const lastVisit = localStorage.getItem('bluehole_visit');
+        const now = new Date().getTime();
+        
+        if (lastVisit && (now - lastVisit < 86400000)) {
+            skipIntro(); // 24시간 안 지났으면 메인으로 직행!
+            return;
+        }
+    } catch(e) {
+        console.warn("로컬스토리지 접근 불가");
+    }
+    typeIntroText();
+}
+
+function typeIntroText() {
+    const text = "> System: 생체 신호 확인 중...\n> 새로운 다이버 접근 감지.\n> '블루홀'에 오신 것을 환영합니다.";
+    let i = 0;
+    typingText.innerText = "";
+    
+    const typeInterval = setInterval(() => {
+        if (i < text.length) {
+            typingText.innerText += text.charAt(i);
+            i++;
+        } else {
+            clearInterval(typeInterval);
+            setTimeout(() => { loginForm.style.display = 'flex'; }, 500);
+        }
+    }, 50);
+}
+
+function startDive() {
+    const nickname = document.getElementById('nickname-input').value || "무명 다이버";
+    const note = document.getElementById('diver-note');
+    note.value = note.value.replace("이름: (인트로에서 입력한 닉네임이 들어갑니다)", "이름: " + nickname);
+    
+    try {
+        localStorage.setItem('bluehole_visit', new Date().getTime());
+    } catch(e) {}
+    skipIntro();
+}
+
+// 인트로 스킵 & 첫 화면 출력 로직 (버그 완벽 해결)
+function skipIntro() {
+    introScreen.style.display = 'none';
+    mainContent.style.display = 'block';
+    bottomNav.style.display = 'flex'; 
+    
+    initMain();
+    
+    // 처음에 무조건 '개요(worldview)' 화면과 첫번째 버튼을 활성화시킵니다!
+    const firstNavBtn = document.querySelector('.nav-btn');
+    showSection('worldview', firstNavBtn);
+}
+
+// 탭 전환 로직
+function showSection(sectionId, btnElement) {
+    // 모든 화면 숨기기
+    document.querySelectorAll('.view-section').forEach(sec => {
+        sec.classList.remove('active-section');
+    });
+    // 선택한 화면만 띄우기
+    document.getElementById(sectionId).classList.add('active-section');
+
+    // 하단 버튼 파란색(active) 처리
+    if (btnElement) {
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+    }
+    window.scrollTo(0, 0);
+}
+
+function initMain() {
+    const floorContainer = document.getElementById('floor-container');
+    floorContainer.innerHTML = '';
+    floorData.forEach(floor => {
+        const div = document.createElement('div');
+        div.className = 'floor-item' + (floor.id === 'B120' ? ' error' : '');
+        div.innerText = `${floor.name} : ${floor.theme}`;
+        div.onclick = () => openFloorModal(floor);
+        floorContainer.appendChild(div);
+    });
+    
+    filterChar('다이버');
+}
+
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modal-body');
+
+function openFloorModal(floor) {
+    modalBody.innerHTML = `
+        <h2 style="color:${floor.id === 'B120' ? 'var(--red)' : 'var(--main-blue)'}">${floor.name}</h2>
+        <p><strong>테마:</strong> ${floor.theme}</p>
+        <p><strong>위험도:</strong> ${floor.danger}</p>
+        <p><strong>관리자:</strong> ${floor.manager}</p>
+        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;">
+        <p style="line-height:1.5;">${floor.desc}</p>
+    `;
+    modal.style.display = 'flex';
+}
+
+function openCharModal(char) {
+    modalBody.innerHTML = `
+        <h2>${char.name}</h2>
+        <p><strong>소속:</strong> ${char.faction} / <strong>나이:</strong> ${char.age}</p>
+        <p><strong>성향:</strong> ${char.trait}</p>
+        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;">
+        <p style="line-height:1.5;">${char.desc}</p>
+    `;
+    modal.style.display = 'flex';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+}
+
+function filterChar(faction) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.innerText === faction) btn.classList.add('active');
+    });
+    document.getElementById('faction-desc').innerText = factionDescriptions[faction];
+
+    const container = document.getElementById('char-container');
+    container.innerHTML = '';
+    
+    charData.filter(c => c.faction === faction).forEach(char => {
+        const div = document.createElement('div');
+        div.className = 'char-card';
+        div.innerHTML = `<strong style="color:var(--white);">${char.name}</strong><span style="font-size:0.8rem; color:#888; margin-top:5px;">${char.age}세</span>`;
+        div.onclick = () => openCharModal(char);
+        container.appendChild(div);
+    });
+}
+
+function drawArtifact() {
+    const randomItem = artifacts[Math.floor(Math.random() * artifacts.length)];
+    document.getElementById('artifact-result').innerHTML = `[획득] <strong style="color:var(--white);">${randomItem}</strong>`;
+    
+    const note = document.getElementById('diver-note');
+    if(!note.value.includes(randomItem)) {
+        note.value = note.value.replace("무기/아티팩트: ", "무기/아티팩트: " + randomItem);
+    }
+}
+
+function copyNote() {
+    navigator.clipboard.writeText(document.getElementById('diver-note').value).then(() => {
+        alert("다이버 노트 복사 완료!");
+    });
+}
+
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => { alert(`'${text}' 복사 완료!`); });
+}
+
+window.onclick = function(event) { if (event.target === modal) closeModal(); }
+
+// 스크립트가 완전히 준비된 후 checkVisit 실행!
+document.addEventListener('DOMContentLoaded', checkVisit);
     const now = new Date().getTime();
     
     if (lastVisit && (now - lastVisit < 86400000)) {
