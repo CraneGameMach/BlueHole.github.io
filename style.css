@@ -15,7 +15,7 @@ body { background-color: var(--bg-dark); color: var(--white); font-family: var(-
 h1, h2, h3 { color: var(--main-blue); text-shadow: 0 0 10px rgba(30,144,255,0.2); text-transform: uppercase; margin-bottom: 20px; }
 
 /* 모바일 하단 네비게이션 바 */
-#bottom-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height); background: #060B14; border-top: 1px solid rgba(30, 144, 255, 0.3); z-index: 100; justify-content: space-around; align-items: center; padding: 0 5px; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
+#bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height); background: #060B14; border-top: 1px solid rgba(30, 144, 255, 0.3); z-index: 100; justify-content: space-around; align-items: center; padding: 0 5px; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
 .nav-btn { flex: 1; background: transparent; border: none; color: #555; padding: 10px 0; font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 10px; }
 .nav-btn.active { color: var(--glow-blue); background: rgba(30, 144, 255, 0.1); }
 
@@ -27,7 +27,7 @@ h1, h2, h3 { color: var(--main-blue); text-shadow: 0 0 10px rgba(30,144,255,0.2)
 #login-form button { background: var(--main-blue); color: #fff; border: none; padding: 15px; border-radius: 20px; font-weight: bold; cursor: pointer; }
 
 /* 메인 콘텐츠 (섹션 뷰 제어) */
-#main-content { display: none; padding: 20px; padding-bottom: calc(var(--nav-height) + 20px); max-width: 600px; margin: 0 auto; min-height: 100vh; }
+#main-content { padding: 20px; padding-bottom: calc(var(--nav-height) + 20px); max-width: 600px; margin: 0 auto; min-height: 100vh; }
 
 /* 핵심: 섹션 하나만 보이기 */
 .view-section { display: none; animation: fadeIn 0.3s ease; }
@@ -35,11 +35,9 @@ h1, h2, h3 { color: var(--main-blue); text-shadow: 0 0 10px rgba(30,144,255,0.2)
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 .content-box { background: var(--panel-bg); border: 1px solid rgba(30,144,255,0.3); padding: 20px; border-radius: 15px; line-height: 1.6; }
-
-/* 버튼 공통 */
 .action-btn { width: 100%; background: rgba(30, 144, 255, 0.1); border: 1px solid var(--main-blue); color: var(--glow-blue); padding: 12px; border-radius: 15px; font-weight: bold; margin-bottom: 15px; cursor: pointer; }
 
-/* 이하 기존 스타일 (층별, 탭, 카드 등) 유지 */
+/* 층별 & 세력 & 캐릭터 유지 */
 .floor-list { display: flex; flex-direction: column; gap: 12px; border-left: 2px solid var(--main-blue); padding-left: 20px; }
 .floor-item { padding: 15px; background: rgba(30, 144, 255, 0.05); border-radius: 12px; cursor: pointer; position: relative; }
 .floor-item::before { content: ''; position: absolute; left: -27px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--bg-dark); border: 2px solid var(--main-blue); border-radius: 50%; }
