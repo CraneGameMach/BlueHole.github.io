@@ -217,11 +217,17 @@ function startDive() {
     skipIntro();
 }
 
+// [수정된 skipIntro 함수]
 function skipIntro() {
     introScreen.style.display = 'none';
     mainContent.style.display = 'block';
     bottomNav.style.display = 'flex'; // 네비게이션 바 표시
     initMain();
+    
+    // ✨ 여기가 핵심입니다! (이전에 누락했던 부분)
+    // 개요 버튼(nav-btn의 첫 번째 요소)을 찾아서 같이 넘겨줘야 에러가 안 납니다!
+    const firstNavBtn = document.querySelector('.nav-btn'); 
+    showSection('worldview', firstNavBtn);
 }
 
 // ✨ [새로 추가된 화면 전환 로직]
