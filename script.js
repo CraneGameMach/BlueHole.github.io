@@ -1,72 +1,201 @@
+// -------------------- 데이터 --------------------
 const floorData = [
-    { id: "B0", name: "B0층", theme: "튜토리얼 / 수중시험장", danger: "최하", desc: "상어 한 마리 사냥 임무. 관리자 히포캄프가 안내합니다.", manager: "히포캄프 (해마)" },
-    { id: "B1", name: "B1층~B9층", theme: "해수면+폐도시", danger: "하", desc: "밖과 가장 유사하며 1층은 인구밀집 생활구역입니다.", manager: "프사마테 (물고기군집)" },
-    { id: "B10", name: "B10층~B19층", theme: "해저동굴", danger: "하", desc: "어둡고 습한 동굴 구조를 가집니다.", manager: "라오메데이아 (초롱아귀)" },
-    { id: "B119", name: "B119층", theme: "낙원+하늘섬", danger: "최하", desc: "모두가 꿈꾸는 낙원 같은 곳. 시험 난이도는 측정불가입니다.", manager: "트리톤 (고래)" },
-    { id: "B120", name: "B120층", theme: "ERROR: 접근 불가", danger: "측정불가", desc: "모든 것을 동결하는 곳. 랭커 외 접근 금지.", manager: "S2002 N5 & S2021 N1" }
+    { id: "B0", name: "B0층", theme: "튜토리얼 / 수중시험장", danger: "최하", desc: "상어 한 마리 사냥 임무.", manager: "히포캄프" },
+    { id: "B1", name: "B1층~B9층", theme: "해수면+폐도시", danger: "하", desc: "가장 인간과 유사한 환경.", manager: "프사마테" },
+    { id: "B10", name: "B10층~B19층", theme: "해저동굴", danger: "하", desc: "어둡고 습한 구조.", manager: "라오메데이아" },
+    { id: "B119", name: "B119층", theme: "낙원", danger: "최하", desc: "이상향.", manager: "트리톤" },
+    { id: "B120", name: "B120층", theme: "접근 불가", danger: "측정불가", desc: "랭커 전용.", manager: "???", error: true }
 ];
 
 const charData = [
-    { name: "해일", faction: "다이버", age: "27", desc: "이곳저곳 정보를 모으는 운 좋은 다이버.", trait: "능청, 사회성 좋음" },
-    { name: "바루나", faction: "다이버", age: "23", desc: "블루홀 생태 연구자.", trait: "염세적, 연구가" },
-    { name: "아르티", faction: "하이랭커", age: "30", desc: "랭킹 15위. 다이버들을 돕는 상냥한 허당.", trait: "이타적, 약약강강" },
-    { name: "타츠미", faction: "호라이즌", age: "22", desc: "랭킹 30위. 쾌남이며 신규 다이버들에게 호의적.", trait: "의리, 밝음" },
-    { name: "카르카", faction: "관리자", age: "?", desc: "블루홀 총관리자.", trait: "절대적 오만, 흥미주의" }
+    { name: "해일", faction: "다이버", age: "27", desc: "정보 수집가" },
+    { name: "바루나", faction: "다이버", age: "23", desc: "연구자" },
+    { name: "아르티", faction: "하이랭커", age: "30", desc: "상위 랭커" },
+    { name: "타츠미", faction: "호라이즌", age: "22", desc: "목표 지향" },
+    { name: "카르카", faction: "관리자", age: "?", desc: "총 관리자" }
 ];
 
 const factionDescriptions = {
-    '다이버': '블루홀 속 인간들. 좀 더 편하고 안전하게 살기 위해 아래로 계속 내려갑니다.',
-    '하이랭커': '블루홀 최고 권력자들. 블루홀의 최소한의 안정을 유지하기 위해 군림합니다.',
-    '호라이즌': '랭킹에 포함되긴 하나, 오직 120층으로 향하기 위해서만 움직이는 자들입니다.',
-    '관리자': '블루홀 내의 시스템 관리자. 신과 유사한 권능을 가졌습니다.'
+    '다이버': '일반 인간',
+    '하이랭커': '최상위 권력자',
+    '호라이즌': '120층 목표 집단',
+    '관리자': '시스템 존재'
 };
 
-const artifacts = ["녹슨 해마의 나침반", "심해석 펜던트", "부서진 랭커의 검", "빛나는 진주 카트리지"];
+const artifacts = ["녹슨 나침반", "심해 펜던트", "랭커의 검", "진주 카트리지"];
 
+
+// -------------------- DOM --------------------
 const introScreen = document.getElementById('intro-screen');
 const mainContent = document.getElementById('main-content');
 const bottomNav = document.getElementById('bottom-nav');
 const typingText = document.getElementById('typing-text');
 const loginForm = document.getElementById('login-form');
 
-// 방문 기록 24시간 체크
+
+// -------------------- 초기 진입 --------------------
+document.addEventListener('DOMContentLoaded', checkVisit);
+
+
+// -------------------- 방문 체크 --------------------
 function checkVisit() {
     try {
         const lastVisit = localStorage.getItem('bluehole_visit');
-        const now = new Date().getTime();
-        
+        const now = Date.now();
+
         if (lastVisit && (now - lastVisit < 86400000)) {
-            skipIntro(); // 24시간 안 지났으면 메인으로 직행
+            skipIntro();
             return;
         }
-    } catch(e) {
-        console.warn("로컬스토리지 접근 불가");
-    }
+    } catch (e) {}
+
     typeIntroText();
 }
 
+
+// -------------------- 인트로 --------------------
 function typeIntroText() {
-    const text = "> System: 생체 신호 확인 중...\n> 새로운 다이버 접근 감지.\n> '블루홀'에 오신 것을 환영합니다.";
+    const text = "> 시스템 접속...\n> 신규 다이버 확인.\n> 블루홀에 오신 것을 환영합니다.";
     let i = 0;
+
     typingText.innerText = "";
-    
-    const typeInterval = setInterval(() => {
+
+    const interval = setInterval(() => {
         if (i < text.length) {
-            typingText.innerText += text.charAt(i);
-            i++;
+            typingText.innerText += text[i++];
         } else {
-            clearInterval(typeInterval);
-            setTimeout(() => { loginForm.style.display = 'flex'; }, 500);
+            clearInterval(interval);
+            loginForm.style.display = 'flex';
         }
-    }, 50);
+    }, 40);
 }
 
 function startDive() {
-    const nickname = document.getElementById('nickname-input').value || "무명 다이버";
+    const nickname = document.getElementById('nickname-input').value || "무명";
+
     const note = document.getElementById('diver-note');
-    note.value = note.value.replace("이름: (인트로에서 입력한 닉네임이 들어갑니다)", "이름: " + nickname);
-    
-    try {
+    note.value = note.value.replace("(인트로에서 입력한 닉네임이 들어갑니다)", nickname);
+
+    localStorage.setItem('bluehole_visit', Date.now());
+
+    skipIntro();
+}
+
+
+// -------------------- 메인 진입 --------------------
+function skipIntro() {
+    introScreen.style.display = 'none';
+    mainContent.style.display = 'block';
+    bottomNav.style.display = 'flex';
+
+    initMain();
+    showSection('worldview', document.querySelector('.nav-btn'));
+}
+
+
+// -------------------- 화면 전환 --------------------
+function showSection(id, btn) {
+    document.querySelectorAll('.view-section').forEach(sec => {
+        sec.classList.remove('active-section');
+    });
+
+    document.getElementById(id).classList.add('active-section');
+
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    window.scrollTo(0, 0);
+}
+
+
+// -------------------- 메인 초기화 --------------------
+function initMain() {
+    renderFloors();
+    filterChar('다이버');
+}
+
+
+// -------------------- 층 렌더링 --------------------
+function renderFloors() {
+    const container = document.getElementById('floor-container');
+    container.innerHTML = '';
+
+    floorData.forEach(floor => {
+        const div = document.createElement('div');
+        div.className = 'floor-item' + (floor.error ? ' error' : '');
+        div.innerText = `${floor.name} : ${floor.theme}`;
+        div.onclick = () => openFloorModal(floor);
+        container.appendChild(div);
+    });
+}
+
+
+// -------------------- 캐릭터 --------------------
+function filterChar(faction) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText === faction);
+    });
+
+    document.getElementById('faction-desc').innerText = factionDescriptions[faction];
+
+    const container = document.getElementById('char-container');
+    container.innerHTML = '';
+
+    charData.filter(c => c.faction === faction).forEach(char => {
+        const div = document.createElement('div');
+        div.className = 'char-card';
+        div.innerHTML = `<strong>${char.name}</strong><br><span>${char.age}세</span>`;
+        div.onclick = () => openCharModal(char);
+        container.appendChild(div);
+    });
+}
+
+
+// -------------------- 모달 --------------------
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modal-body');
+
+function openFloorModal(floor) {
+    modalBody.innerHTML = `
+        <h2>${floor.name}</h2>
+        <p>테마: ${floor.theme}</p>
+        <p>위험도: ${floor.danger}</p>
+        <p>${floor.desc}</p>
+    `;
+    modal.style.display = 'flex';
+}
+
+function openCharModal(char) {
+    modalBody.innerHTML = `
+        <h2>${char.name}</h2>
+        <p>${char.desc}</p>
+    `;
+    modal.style.display = 'flex';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+}
+
+window.onclick = e => {
+    if (e.target === modal) closeModal();
+};
+
+
+// -------------------- 기능 --------------------
+function drawArtifact() {
+    const item = artifacts[Math.floor(Math.random() * artifacts.length)];
+    document.getElementById('artifact-result').innerHTML = `[획득] <strong>${item}</strong>`;
+}
+
+function copyNote() {
+    const text = document.getElementById('diver-note').value;
+    navigator.clipboard.writeText(text);
+}
+
+function copyText(text) {
+    navigator.clipboard.writeText(text);
+}    try {
         localStorage.setItem('bluehole_visit', new Date().getTime());
     } catch(e) {}
     skipIntro();
