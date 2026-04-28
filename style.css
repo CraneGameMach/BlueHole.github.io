@@ -1,39 +1,74 @@
-/* 전역 설정 및 변수 */
+/* 전역 설정 및 변수 (컬러 변경) */
 :root {
-    --bg-dark: #040B16;
-    --cyan: #00FFCC;
-    --cyan-dim: rgba(0, 255, 204, 0.2);
-    --red: #FF3366;
-    --white: #E0E6ED;
-    --panel-bg: rgba(10, 20, 35, 0.85);
+    --bg-dark: #020611; /* 더 깊은 심해색 */
+    --main-blue: #1E90FF; /* 메인 블루 */
+    --glow-blue: #4DABF7; /* 네온 라이트 블루 */
+    --glow-dim: rgba(30, 144, 255, 0.2);
+    --red: #FF4D4D;
+    --white: #E6F0FA;
+    --panel-bg: rgba(12, 24, 44, 0.85);
     --font-main: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-    --font-terminal: 'Courier New', Courier, monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background-color: var(--bg-dark); color: var(--white); font-family: var(--font-main); overflow-x: hidden; }
-h1, h2, h3 { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
-button { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); padding: 10px 15px; cursor: pointer; font-family: var(--font-terminal); text-transform: uppercase; transition: all 0.3s ease; }
-button:hover { background: var(--cyan-dim); box-shadow: 0 0 10px var(--cyan); }
+
+/* 제목 디자인 */
+h1, h2, h3 { color: var(--main-blue); text-shadow: 0 0 10px var(--glow-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+
+/* 버튼 디자인 (둥글게 변경) */
+button { background: rgba(30, 144, 255, 0.1); border: 1px solid var(--main-blue); color: var(--glow-blue); padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: all 0.3s ease; }
+button:hover { background: var(--main-blue); color: #fff; box-shadow: 0 0 15px var(--glow-dim); }
 
 /* 인트로 스크린 */
-#intro-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-.terminal-text { font-family: var(--font-terminal); color: var(--cyan); font-size: 1.2rem; margin-bottom: 20px; text-align: center; min-height: 60px; }
+#intro-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #010308; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+.terminal-text { color: var(--glow-blue); font-size: 1.1rem; margin-bottom: 30px; text-align: center; min-height: 60px; line-height: 1.5; }
 #login-form { display: none; flex-direction: column; gap: 15px; align-items: center; width: 100%; max-width: 300px; }
-#login-form input { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font-terminal); outline: none; text-align: center; }
+#login-form input { width: 100%; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid var(--main-blue); border-radius: 20px; color: var(--white); outline: none; text-align: center; }
 
-/* 메인 레이아웃 */
+/* 메인 레이아웃 (섹션 둥글게) */
 #main-content { display: none; padding: 20px; max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
-section { margin-bottom: 60px; background: var(--panel-bg); border: 1px solid rgba(0, 255, 204, 0.3); padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+section { margin-bottom: 50px; background: var(--panel-bg); border: 1px solid rgba(30, 144, 255, 0.3); padding: 25px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
 
 /* 블루홀 가이드 (층별 UI) */
-.floor-list { display: flex; flex-direction: column; gap: 10px; border-left: 2px solid var(--cyan); padding-left: 15px; margin-top: 20px; }
-.floor-item { padding: 15px; background: rgba(0, 255, 204, 0.05); border: 1px solid transparent; cursor: pointer; transition: 0.3s; position: relative; }
-.floor-item::before { content: ''; position: absolute; left: -21px; top: 50%; transform: translateY(-50%); width: 10px; height: 10px; background: var(--bg-dark); border: 2px solid var(--cyan); border-radius: 50%; }
-.floor-item:hover { border-color: var(--cyan); background: var(--cyan-dim); }
-.floor-item.error { color: var(--red); border-color: var(--red); }
+.floor-list { display: flex; flex-direction: column; gap: 12px; border-left: 2px solid var(--main-blue); padding-left: 20px; margin-top: 20px; }
+.floor-item { padding: 15px; background: rgba(30, 144, 255, 0.05); border: 1px solid transparent; border-radius: 12px; cursor: pointer; transition: 0.3s; position: relative; }
+.floor-item::before { content: ''; position: absolute; left: -27px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--bg-dark); border: 2px solid var(--main-blue); border-radius: 50%; }
+.floor-item:hover { border-color: var(--main-blue); background: var(--glow-dim); transform: translateX(5px); }
+.floor-item.error { color: var(--red); }
 .floor-item.error::before { border-color: var(--red); }
-.floor-item.error:hover { background: rgba(255, 51, 102, 0.1); }
+
+/* 세력 & 캐릭터 (탭 확실히 분리) */
+.tabs-container { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 15px; padding: 5px; background: rgba(0,0,0,0.3); border-radius: 30px; }
+.tab-btn { flex: 1; min-width: 80px; padding: 10px; font-size: 0.9rem; border: none; border-radius: 20px; background: transparent; color: var(--white); text-align: center; }
+.tab-btn.active { background: var(--main-blue); color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.faction-info { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.95rem; color: #B0C4DE; border-left: 3px solid var(--main-blue); }
+
+/* 캐릭터 카드 */
+.character-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; }
+.char-card { aspect-ratio: 1; background: linear-gradient(145deg, rgba(30,144,255,0.1), rgba(0,0,0,0.5)); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: 0.2s; padding: 10px; }
+.char-card:hover { border-color: var(--main-blue); transform: translateY(-3px); box-shadow: 0 5px 15px var(--glow-dim); }
+
+/* 유저 설정 & 메신저 */
+textarea { width: 100%; height: 160px; background: rgba(0,0,0,0.4); border: 1px solid var(--main-blue); border-radius: 12px; color: var(--white); padding: 15px; font-family: inherit; resize: none; margin-bottom: 15px; outline: none; }
+textarea:focus { box-shadow: 0 0 10px var(--glow-dim); }
+.artifact-box { margin: 15px 0; padding: 15px; background: rgba(30, 144, 255, 0.05); border: 1px dashed var(--main-blue); border-radius: 12px; text-align: center; color: var(--glow-blue); }
+
+.chat-container { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+.bubble { max-width: 85%; padding: 12px 18px; border-radius: 20px; font-size: 0.95rem; line-height: 1.4; }
+.bubble.system { align-self: flex-start; background: rgba(30, 144, 255, 0.15); border: 1px solid rgba(30,144,255,0.3); border-bottom-left-radius: 4px; }
+.bubble.user { align-self: flex-end; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); border-bottom-right-radius: 4px; }
+
+/* 유틸리티 및 명령어 창 */
+.flex-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.flex-between:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.flex-between button { padding: 6px 12px; font-size: 0.8rem; }
+.command-list { background: rgba(0,0,0,0.6); padding: 15px; border-radius: 12px; font-size: 0.9rem; }
+
+/* 모달창 (둥글게) */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(3px); }
+.modal-content { background: var(--panel-bg); border: 1px solid var(--main-blue); padding: 25px; border-radius: 20px; max-width: 400px; width: 100%; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+.close-btn { position: absolute; top: 15px; right: 20px; color: var(--white); cursor: pointer; font-size: 1.2rem; background: rgba(255,255,255,0.1); width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
 
 /* 모달 */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
