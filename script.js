@@ -470,17 +470,22 @@ window.onclick = function(event) {
     if (event.target === modal) closeModal();
 }
 
-window.onload = checkVisit;
-    const now = new Date().getTime();
-    
-    // 24시간(86400000ms) 이내 접속 기록이 있으면 인트로 스킵
-    if (lastVisit && (now - lastVisit < 86400000)) {
-        introScreen.style.display = 'none';
-        mainContent.style.display = 'block';
-        initMain();
-    } else {
-        typeIntroText();
+// [수정된 접속 확인 로직]
+function checkVisit() {
+    try {
+        const lastVisit = localStorage.getItem('bluehole_visit');
+        const now = new Date().getTime();
+        
+        // 24시간 이내 접속 기록이 있으면 스킵
+        if (lastVisit && (now - lastVisit < 86400000)) {
+            skipIntro();
+            return;
+        }
+    } catch(error) {
+        console.warn("로컬 스토리지 접근이 제한된 환경입니다. 인트로를 진행합니다.");
     }
+    // 에러가 나거나 첫 접속이면 무조건 타이핑 시작
+    typeIntroText();
 }
 
 function typeIntroText() {
