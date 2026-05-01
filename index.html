@@ -7,92 +7,179 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<!-- 떠다니는 BGM 플레이어 -->
+<div id="floating-player" class="floating-player">
+    <div class="player-header" id="player-header">
+        <span class="player-title">🎵 BGM Player</span>
+        <button class="player-toggle-btn" onclick="togglePlayer()">_</button>
+    </div>
+    <div class="player-body" id="player-body">
+        <iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/6c6CPYyo5jM?si=SbARNuEOK2lwzp6n" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+</div>
+<!-- 인트로 스크린 -->
 <div id="intro-screen">
-    <div id="typing-text" class="terminal-text"></div>
-    <div id="login-form">
-        <input type="text" id="nickname-input" placeholder="[다이버 식별명 입력]">
-        <button onclick="startDive()">[ 하강 (Dive) ]</button>
+    <div id="intro-window">
+        <div class="window-header">
+            <span>[ BLUEHOLE_SYSTEM_ACCESS ]</span>
+            <div class="window-controls">
+                <span style="background:var(--main-blue);"></span>
+                <span style="background:var(--glow-blue);"></span>
+                <span style="background:rgba(255,255,255,0.5);"></span>
+            </div>
+        </div>
+        <div class="window-body">
+            <div id="typing-text" class="terminal-text"></div>
+            <div id="login-form">
+                <input type="text" id="nickname-input" placeholder="[다이버 식별명 입력]">
+                <button onclick="startDive()">[ 하강 (Dive) ]</button>
+            </div>
+        </div>
     </div>
 </div>
 
-<div id="main-content">
+<!-- 네비게이션 바 -->
+<nav id="bottom-nav" style="display: none;">
+    <button class="nav-btn active" onclick="showSection('worldview', this)">개요</button>
+    <button class="nav-btn" onclick="showSection('guide', this)">블루홀</button>
+    <button class="nav-btn" onclick="showSection('entities', this)">세력</button>
+    <button class="nav-btn" onclick="showSection('terminal', this)">명령어</button>
     
-    <section id="worldview">
-        <h2>Worldview Overview</h2>
-        <p><strong>포스트 아포칼립스 / 2037년</strong></p>
-        <p style="margin-top: 10px; line-height: 1.6;">
-            해수면 상승으로 육지가 소멸하고, 인류는 건물 위에서 생활하고 있다. <br>
-            그러던 중 바다 밑바닥을 알 수 없는 거대한 싱크홀 <strong>'블루홀(Blue Hole)'</strong>이 발견되었다.<br>
-            살기 위해, 혹은 그 끝에 있다는 낙원을 찾기 위해... 사람들은 심해의 뒤집힌 탑으로 하강한다.
-        </p>
-    </section>
+    <!-- ✨ 새로 추가된 플레이 하러가기 버튼 (새 창 열림) -->
+    <a href=" " target="_blank" class="nav-btn play-btn">▶ 플레이</a>
+</nav>
 
-    <section id="guide">
-        <h2>The Abyss Guide</h2>
-        <div class="floor-list" id="floor-container">
+<!-- 메인 콘텐츠 -->
+<div id="main-content" style="display: none;">
+    
+    <!-- 1. 세계관 개요 -->
+    <section id="worldview" class="view-section active-section">
+        <h2>World</h2>
+        <div class="content-box">
+            <div class="sub-section">
+                <h3>[ SYSTEM ] 세계관</h3>
+                <p>2037년, 해수면 상승으로 육지의 대부분이 소멸한 포스트 아포칼립스. 인류는 마천루의 꼭대기나 인공 구조물 위에서 아슬아슬한 생존을 이어가고 있다. 자원은 고갈되고, 희망이 메말라가는 절망적인 시대이다.</p>
             </div>
+            <div class="sub-section">
+                <h3>[ EVENT ] 블루홀 (Blue Hole)</h3>
+                <p>어느 날 바다 밑바닥에 끝을 알 수 없는 거대한 싱크홀이 모습을 드러냈다. 이 심연은 기이한 인력으로 지상의 사람들을 끌어들이기 시작했고, 끌려간 자들은 돌아오지 않았다. 내부에는 수중임에도 지상과 유사한 물리법칙이 작동한다.</p>
+                <div class="wiki-list">
+                    <div class="wiki-item">
+                        <h4>▶ 층 (Floors)</h4>
+                        <p>지하 120층까지 존재하는 수직형 세계. 다음 층으로 내려가려면 <strong>'게이트'</strong>를 통과해야 하며, 이전 층으로 돌아가려면 이동수단인 <strong>'어비스'</strong>에게 <strong>'널(Null)'</strong>이라는 새우 모양의 먹이를 지불해야만 한다.</p>
+                        <ul class="nested-list">
+                            <li><strong>일반층:</strong> 몬스터와의 전투에서 생존하거나, 복잡한 기믹의 퍼즐(문제)을 풀어야 돌파할 수 있는 구역.</li>
+                            <li><strong>시험층:</strong> 특정 층마다 등장하며, 해당 구역의 지배자인 '관리자'와 대면하여 그들이 직접 내리는 시험에 응시해야 한다.</li>
+                        </ul>
+                    </div>
+                    <div class="wiki-item">
+                        <h4>▶ 쉘 (Shell)</h4>
+                        <p>블루홀 내부에서 통용되는 공식 화폐. 지상의 가치로 환산 시 <strong>1쉘(Shell) = 1원</strong>의 가치를 지닌다.</p>
+                    </div>
+                    <div class="wiki-item">
+                        <h4>▶ 랭커 (Ranker)</h4>
+                        <p>목숨을 건 하강 끝에 <strong>119층</strong>에 도달하여 정식으로 랭킹에 등록된 다이버들. 상위권일수록 막강한 영향력을 지니며 상위 15명을 하이랭커라고 부른다.</p>
+                    </div>
+                    <div class="wiki-item">
+                        <h4>▶ 아티팩트 (Artifact)</h4>
+                        <p>몬스터를 처치하거나, 퍼즐을 풀고 숨겨진 요소를 발견했을 때 획득할 수 있는 신비한 장비. 착용자에게 고유한 버프나 이능력을 부여한다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section id="entities">
-        <h2>Entities</h2>
+    <!-- 2. 블루홀 가이드 -->
+    <section id="guide" class="view-section">
+        <h2>Blue hole</h2>
+        <div class="floor-list" id="floor-container"></div>
+    </section>
+
+    <!-- 3. 세력 & 캐릭터 -->
+    <section id="entities" class="view-section">
+        <h2>Character</h2>
         <div class="tabs-container">
-            <button class="tab-btn active" onclick="filterChar('다이버')">다이버</button>
-            <button class="tab-btn" onclick="filterChar('하이랭커')">하이랭커</button>
-            <button class="tab-btn" onclick="filterChar('호라이즌')">호라이즌</button>
-            <button class="tab-btn" onclick="filterChar('관리자')">관리자</button>
+            <!-- 탭 버튼이 JS로 자동 생성됨 -->
         </div>
-        
         <div class="faction-info">
-            <p id="faction-desc">블루홀 속 인간들. 좀 더 편하고 안전하게 살기 위해 아래로 계속 내려간다.</p>
+            <p id="faction-desc">로딩 중...</p>
         </div>
-
-        <div class="character-grid" id="char-container">
-            </div>
+        <div class="character-grid" id="char-container"></div>
     </section>
 
-    <section id="user-setup">
-        <h2>Diver Setup</h2>
-        <button onclick="drawArtifact()">랜덤 아티팩트 스캔</button>
-        <div id="artifact-result" class="artifact-box">아직 획득한 아티팩트가 없습니다.</div>
-        
-        <textarea id="diver-note">
-[다이버 노트]
-이름: (인트로에서 입력한 닉네임이 들어갑니다)
-나이: 
-성별: 
-외관: 
-성격: 
-무기/아티팩트: 
-특징: </textarea>
-        <button onclick="copyNote()">📋 설정 복사하기</button>
-    </section>
-
-    <section id="terminal">
-        <h2>System Terminal</h2>
+    <!-- 4. 명령어 -->
+    <section id="terminal" class="view-section">
+        <h2>Command</h2>
         <div class="command-list">
-            <div class="flex-between"><span>!상태창 - 현재 층수 및 피로도 확인</span> <button onclick="copyText('!상태창')">복사</button></div>
-            <div class="flex-between"><span>!인벤토리 - 소지 아티팩트 확인</span> <button onclick="copyText('!인벤토리')">복사</button></div>
-            <div class="flex-between"><span>!관리자호출 - 해당 층 관리자 대면</span> <button onclick="copyText('!관리자호출')">복사</button></div>
-        </div>
+            
+            <!-- 명령어 1 -->
+            <div class="command-item">
+                <div class="cmd-header">
+                    <span class="cmd-name">!요약</span>
+                    <button class="cmd-copy-btn" onclick="copyText('!요약')">복사</button>
+                </div>
+                <div class="cmd-desc">최근 약 30턴간의 정보를 요약해 정리해줍니다.</div>
+            </div>
 
-        <h3 style="margin-top: 30px; font-size: 1rem; color: var(--main-blue);">Q&A 채널</h3>
-        <div class="chat-container">
-            <div class="bubble user">첫 문장은 어떻게 시작해야 하나요?</div>
-            <div class="bubble system">"블루홀 입구에 도착하여 심호흡을 한다." 처럼 행동과 지문을 섞어 자유롭게 묘사하며 시작하시면 됩니다. 튜토리얼 층(B0) 안내를 먼저 받게 됩니다.</div>
-            <div class="bubble user">전투는 턴제인가요?</div>
-            <div class="bubble system">다이버님의 행동 묘사에 따라 AI가 상황을 판정하여 결과를 출력합니다. 시스템 돌파 규칙을 참고해주세요.</div>
+            <!-- 명령어 2 -->
+            <div class="command-item">
+                <div class="cmd-header">
+                    <span class="cmd-name">!점검</span>
+                    <button class="cmd-copy-btn" onclick="copyText('!점검')">복사</button>
+                </div>
+                <div class="cmd-desc">방이 이상해졌을 때 사용가능합니다. 하이퍼 챗 계열 사용을 추천합니다.</div>
+            </div>
+
+            <!-- 명령어 3 -->
+            <div class="command-item">
+                <div class="cmd-header">
+                    <span class="cmd-name">!커뮤</span>
+                    <button class="cmd-copy-btn" onclick="copyText('!커뮤')">복사</button>
+                </div>
+                <div class="cmd-desc">다이버들의 커뮤니티 글을 보여줍니다. 대부분 고충이나 푸념글입니다.</div>
+            </div>
+
+            <!-- 명령어 4 -->
+            <div class="command-item">
+                <div class="cmd-header">
+                    <span class="cmd-name">!소셜</span>
+                    <button class="cmd-copy-btn" onclick="copyText('!소셜')">복사</button>
+                </div>
+                <div class="cmd-desc">다이버들의 SNS 글을 보여줍니다. 대부분 정보나 공략글입니다.</div>
+            </div>
+
+            <!-- 명령어 4 -->
+            <div class="command-item">
+                <div class="cmd-header">
+                    <span class="cmd-name">!정보 (대상)</span>
+                    <button class="cmd-copy-btn" onclick="copyText('!정보')">복사</button>
+                </div>
+                <div class="cmd-desc">AI가 생성하는 정보들에 대항하기 위해 만들어졌습니다. (대상)에 정보를 얻고 싶은 대상을 입력하시면 됩니다. 참고로 인물에 대한 정보는 안나옵니다.</div>
+            </div>
+
         </div>
     </section>
-</div>
 
-<div id="modal" class="modal-overlay">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">✕</span>
-        <div id="modal-body"></div>
+<!-- 모달 창 -->
+<!-- [분리된 모달 1] 층별 상세 모달 -->
+<div id="floor-modal" class="modal-overlay">
+    <div class="modal-content floor-modal-content">
+        <span class="close-btn" onclick="closeModal('floor-modal')">✕</span>
+        <div id="floor-modal-body"></div>
     </div>
 </div>
 
+<!-- [분리된 모달 2] 캐릭터 상세 모달 -->
+<div id="char-modal" class="modal-overlay">
+    <div class="modal-content char-modal-content">
+        <span class="close-btn" onclick="closeModal('char-modal')">✕</span>
+        <div id="char-modal-body"></div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
 <script src="script.js"></script>
 </body>
 </html>
